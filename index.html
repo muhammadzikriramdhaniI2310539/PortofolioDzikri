@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dzikri Ramdhani | Creative Dev</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-blue: #3b82f6;
+            --soft-blue: #eff6ff;
+            --bg-white: #fafafa;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-white);
+            color: #1e293b;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Background Elements */
+        .bg-pattern {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+            background: 
+                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+                linear-gradient(to bottom, #fafafa, #f0f4f8);
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(#cbd5e1 0.5px, transparent 0.5px);
+            background-size: 30px 30px;
+            opacity: 0.2;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Enhanced Navbar */
+        .floating-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 1.25rem 2.5rem;
+        }
+
+        .nav-item {
+            position: relative;
+            transition: all 0.3s ease;
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            font-weight: 800;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: -6px; left: 50%; width: 0; height: 3px;
+            background: var(--primary-blue);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateX(-50%);
+            border-radius: 10px;
+        }
+
+        .nav-item.active {
+            color: var(--primary-blue);
+        }
+        
+        .nav-item.active::after {
+            width: 100%;
+        }
+
+        /* ABOUT SECTION SPECIFIC STYLES */
+        .about-card {
+            background: white;
+            border-radius: 48px;
+            overflow: hidden;
+            box-shadow: 0 40px 100px -20px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        /* STACKING CARDS LOGIC */
+        .stack-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            justify-items: center;
+            padding-bottom: 20vh; 
+        }
+
+        .stack-card {
+            position: sticky;
+            width: 100%;
+            min-height: 450px;
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 40px;
+            box-shadow: 0 -20px 40px rgba(0,0,0,0.02), 0 20px 50px rgba(0,0,0,0.04);
+            display: flex;
+            align-items: center;
+            margin-bottom: 10vh;
+            transition: transform 0.3s ease;
+        }
+
+        .card-1 { top: 140px; z-index: 1; }
+        .card-2 { top: 160px; z-index: 2; }
+        .card-3 { top: 180px; z-index: 3; }
+
+        /* Typing Animation */
+        .typing-text::after {
+            content: "|";
+            animation: blink 1s infinite;
+            color: var(--primary-blue);
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Marquee */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+            background: #0f172a;
+            color: white;
+            padding: 18px 0;
+            transform: rotate(-1.5deg);
+            width: 120%;
+            margin-left: -10%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 30s linear infinite;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-size: 0.85rem;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Blob Shape */
+        .blob-shape {
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            overflow: hidden;
+            animation: blob-morph 12s ease-in-out infinite;
+        }
+        @keyframes blob-morph {
+            0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+            50% { border-radius: 65% 35% 45% 55% / 55% 45% 65% 35%; }
+        }
+
+        /* Experience Cards */
+        .exp-card {
+            background: white;
+            border-radius: 32px;
+            padding: 40px;
+            border: 1px solid rgba(0,0,0,0.04);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .exp-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-blue);
+            box-shadow: 0 30px 60px rgba(59, 130, 246, 0.08);
+        }
+
+        .badge-organisasi {
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 6px 14px;
+            border-radius: 99px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid #f1f5f9;
+        }
+
+        .badge-magang {
+            background: #eff6ff;
+            color: #3b82f6;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 6px 14px;
+            border-radius: 99px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid #dbeafe;
+        }
+
+        /* Skill Styling */
+        .skill-group-title {
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 0.15em;
+            color: #94a3b8;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .skill-tag {
+            background: #ffffff;
+            color: #1e293b;
+            padding: 10px 24px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            display: inline-block;
+        }
+        
+        .skill-tag:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Project Hover Link Animation */
+        .project-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: #1e293b;
+            color: white;
+            padding: 14px 28px;
+            border-radius: 18px;
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .project-link-btn:hover {
+            background: var(--primary-blue);
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.25);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 900px;
+            border-radius: 40px;
+            padding: 40px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="bg-pattern"></div>
+    <div class="bg-grid"></div>
+    
+    <!-- Navigation -->
+    <header class="fixed top-10 left-0 w-full z-[100] flex justify-center px-6">
+        <nav class="floating-nav flex items-center justify-between w-full max-w-2xl rounded-full shadow-xl shadow-blue-900/5">
+            <div class="flex items-center group cursor-pointer">
+                <span class="font-black text-xs tracking-[0.3em] uppercase text-slate-900">Dzikri.</span>
+            </div>
+            
+            <div class="flex items-center gap-10">
+                <a href="#home" class="nav-item active" data-section="home">Home</a>
+                <a href="#about" class="nav-item" data-section="about">Tentang</a>
+                <a href="#projects" class="nav-item" data-section="projects">Karya</a>
+                <a href="#experience" class="nav-item" data-section="experience">Profil</a>
+                <a href="#contact" class="nav-item" data-section="contact">Kontak</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- HERO SECTION -->
+        <section id="home" class="max-w-6xl mx-auto px-6 min-h-screen flex items-center relative">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-20 w-full pt-20">
+                <div class="flex-1 order-2 md:order-1">
+                    <div class="inline-flex items-center gap-2 bg-white border border-slate-100 px-4 py-1.5 rounded-full mb-10 shadow-sm">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                        </span>
+                        <span class="text-blue-600 text-[10px] font-black uppercase tracking-[0.2em]">Ready to work</span>
+                    </div>
+                    
+                    <h1 class="text-5xl md:text-7xl font-extrabold mb-8 tracking-tighter leading-[1.05] text-slate-900">
+                        <span id="typing" class="typing-text text-blue-600">Portofolio Peribadi</span>
+                    </h1>
+                    <p class="text-slate-500 text-base md:text-lg max-w-md mb-12 leading-relaxed font-medium">
+                       Halo! Saya Dzikri. Saya membangun pengalaman digital yang estetik dan fungsional melalui kode dan desain.
+                    </p>
+                    
+                    <div class="flex items-center gap-8">
+                        <a href="#about" class="bg-slate-950 text-white px-10 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-blue-600 transition-all shadow-2xl shadow-slate-200 inline-block">Mulai Jelajah</a>
+                    </div>
+                </div>
+
+                <div class="flex-1 order-1 md:order-2 flex justify-center md:justify-end">
+                    <div class="relative group">
+                        <div class="absolute -inset-6 bg-blue-100 rounded-full blur-3xl opacity-40"></div>
+                        <div class="blob-shape w-72 h-72 md:w-[400px] md:h-[400px] border-[16px] border-white shadow-2xl relative z-10 bg-white">
+                          <img src="gambar/porto1.jpg" alt="Dzikri Ramdhani" class="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-1000">
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT ME SECTION -->
+        <section id="about" class="max-w-6xl mx-auto px-6 py-40">
+            <div class="about-card flex flex-col lg:flex-row">
+                <!-- Left Content -->
+                <div class="lg:w-7/12 p-10 md:p-16">
+                    <span class="text-blue-600 font-black uppercase tracking-[0.5em] text-[10px] mb-6 block">Kenali Saya</span>
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-8 tracking-tighter leading-tight">
+                        Seorang Mahasiswa yang suka <span class="text-blue-600">Eksplorisasi</span> ke dalam <span class="italic font-playfair">semua bidang Teknologi.</span>
+                    </h2>
+                    <div class="space-y-6 text-slate-600 leading-relaxed text-base md:text-lg">
+                        <p>
+                          Ibarat sistem komputer, saya adalah perpaduan antara Processor yang cepat belajar (terutama soal AI) dan User Interface yang ramah (aktif berorganisasi). Sedang menempuh studi di Ilmu Komputer Universitas Djuanda sambil terus mengeksplorasi update terbaru di dunia teknologi. Senang membangun koneksi layaknya cloud computing—fleksibel, luas, dan selalu terhubung.
+                        </p>
+                        <p>
+                            Dengan pengalaman kepimpinan di organisasi mahasiswa, saya belajar bagaimana menyelaraskan visi teknis dengan keperluan pengguna yang nyata. Saya percaya bahawa setiap piksel mempunyai tujuannya yang tersendiri.
+                        </p>
+                    </div>
+                </div>
+                <!-- Right Visual -->
+                <div class="lg:w-5/12 bg-slate-50 relative overflow-hidden flex items-center justify-center p-12">
+                    <div class="absolute inset-0 opacity-10">
+                        <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                            <path d="M0,0 L100,100 M100,0 L0,100" stroke="currentColor" stroke-width="0.5"/>
+                        </svg>
+                    </div>
+                 
+                </div>
+            </div>
+        </section>
+
+        <!-- MARQUEE -->
+        <div class="marquee-container mb-32">
+            <div class="marquee-content">
+               CREATIVE DEVELOPER • UI/UX DESIGNER • JAVASCRIPT ENTHUSIAST • AESHTO PHOTOBOOTH • CREATIVE DEVELOPER • UI/UX DESIGNER • JAVASCRIPT ENTHUSIAST • AESHTO PHOTOBOOTH •
+            </div>
+        </div>
+
+        <!-- STACKING PROJECTS SECTION -->
+        <section id="projects" class="max-w-6xl mx-auto px-6 mb-60">
+            <div class="mb-32 text-center">
+                <h2 class="text-blue-600 font-black uppercase tracking-[0.5em] text-[10px] mb-4">Selected Works</h2>
+                <h3 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tighter">Proyek Pilihan.</h3>
+            </div>
+            
+            <div class="stack-container">
+                <!-- Project 1: AESHTO -->
+                <div class="stack-card card-1 p-8 md:p-12">
+                    <div class="flex flex-col lg:flex-row gap-12 items-center w-full">
+                        <div class="w-full lg:w-5/12 max-w-md rounded-[24px] overflow-hidden shadow-2xl border border-slate-100 group relative aspect-video">
+                           <img src="https://lh3.googleusercontent.com/u/0/d/1ALJq_SapZ3AE0rh5E1p_s4Qg9THcg6MZ" 
+                            referrerpolicy="no-referrer"
+                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                            alt="Aestho Photobooth Preview">
+                             <div class="absolute inset-0 bg-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        </div>
+                        <div class="w-full lg:w-7/12 px-2">
+                            <span class="text-blue-500 font-black text-[10px] tracking-widest uppercase mb-4 block">01 / WEB DEPLOYMENT</span>
+                            <h4 class="font-bold text-4xl mb-6 text-slate-900 tracking-tight italic">Aestho Photobooth</h4>
+                            <p class="text-slate-600 text-sm mb-10 leading-relaxed">
+                                Website Photobooth yang saya bangun untuk studio photobooth estetik. Fokus pada pengalaman pengguna yang bersih dan visual yang menarik untuk pengguna.
+                            </p>
+                            <a href="https://aesthoo.vercel.app" target="_blank" class="project-link-btn">
+                                 Kunjungi Website
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2: Diskominfo -->
+                <div class="stack-card card-2 p-8 md:p-12">
+                    <div class="flex flex-col lg:flex-row gap-12 items-center w-full">
+                        <div class="w-full lg:w-5/12 max-w-md rounded-[24px] overflow-hidden shadow-xl border border-slate-100 aspect-video">
+                            <img src="https://lh3.googleusercontent.com/u/0/d/1mTVSDhOf8wUToaiZcla55--XGHr_YmY1" 
+     alt="Dzikri Ramdhani" 
+     class="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-1000">
+                        </div>
+                        <div class="w-full lg:w-7/12 px-2">
+                            <span class="text-blue-500 font-black text-[10px] tracking-widest uppercase mb-4 block">02 / UI/UX REDESIGN</span>
+                            <h4 class="font-bold text-3xl mb-6 text-slate-900 tracking-tight">Perancangan FrontEnd UI/UX Redesign tampilan Website Diskominfo Kota Bogor</h4>
+                            <p class="text-slate-600 text-sm mb-10 leading-relaxed">
+                               Transformasi total antarmuka digital Diskominfo Kota Bogor untuk menghadirkan layanan informasi publik yang lebih modern, inklusif, dan mudah diakses.
+                            </p>
+                            <div class="flex flex-wrap gap-4">
+                                <a href="https://www.figma.com/design/oSdRAa4mn4iySkxHyIqwVu/Kominfo?node-id=252-8&t=Ip7F70wfzrXzw0JL-1" target="_blank" class="project-link-btn">
+                                    Lihat Design Figma
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C9.24 2 7 4.24 7 7c0 1.58.74 2.99 1.9 3.9C7.74 11.81 7 13.31 7 15c0 1.69.74 3.19 1.9 4.1C7.74 20.01 7 21.42 7 23h10c0-1.58-.74-2.99-1.9-3.9 1.16-.91 1.9-2.41 1.9-4.1 0-1.69-.74-3.19-1.9-4.1 1.16-.91 1.9-2.32 1.9-3.9 0-2.76-2.24-5-5-5z"/></svg>
+                                </a>
+                                <a href="https://diskominfo.kotabogor.go.id" target="_blank" class="project-link-btn !bg-blue-600">
+                                     Kunjungi Website Diskominfo
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3: Cerdas AI -->
+                <div class="stack-card card-3 p-8 md:p-12">
+                    <div class="flex flex-col lg:flex-row gap-12 items-center w-full">
+                        <div class="w-full lg:w-5/12 max-w-md rounded-[24px] overflow-hidden shadow-xl border border-slate-100 aspect-video">
+                             <img src="https://lh3.googleusercontent.com/d/1zp_Za8OVPSE_IafTPc0RstIo2XSH6GIN" 
+     referrerpolicy="no-referrer"
+     class="w-full h-full object-cover" 
+     alt="Cerdas AI Preview">
+                        </div>
+                        <div class="w-full lg:w-7/12 px-2">
+                            <span class="text-blue-500 font-black text-[10px] tracking-widest uppercase mb-4 block">03 /  AI EDUCATION PLATFORM</span>
+                            <h4 class="font-bold text-4xl mb-6 text-slate-900 tracking-tight italic">Cerdas AI</h4>
+                            <p class="text-slate-600 text-sm mb-10 leading-relaxed">
+                               Sebuah platform belajar dengan bantuan AI yang dirancang untuk mengembangkan potensi mahasiswa maupun siswa agar mendapatkan proses pembelajaran yang dipersonalisasi sesuai kebiasaan dan keterampilan mereka. (Tahap Perancangan)
+                            </p>
+                            <a href="https://muhammadzikriramdhanii2310539.github.io/CerdasAI/" target="_blank" class="project-link-btn">
+                                Lihat Demo Web
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXPERIENCE & ORGANIZATIONS SECTION -->
+        <section id="experience" class="max-w-6xl mx-auto px-6 mb-40">
+            <div class="mb-20">
+                <h2 class="text-blue-600 font-black uppercase tracking-[0.5em] text-[10px] mb-4">Latar Belakang</h2>
+                <h3 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tighter">Pengalaman & Organisasi.</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+                <!-- Card 1 -->
+                <div class="exp-card" onclick="openGallery('diskominfo')">
+                    <div class="mb-8 flex justify-between items-start">
+                        <span class="badge-magang">Magang Industri</span>
+                        <span class="text-[10px] font-bold text-slate-400">45 Hari</span>
+                    </div>
+                    <h4 class="text-xl font-extrabold text-slate-900 mb-2 text-balance leading-tight">Diskominfo Kota Bogor</h4>
+                    <p class="text-blue-500 text-xs font-black uppercase tracking-widest mb-6">Front-End Developer</p>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-8 flex-grow">
+                        Bertanggungjawab dalam proses <span class="text-slate-900 font-bold">Front-End</span> resmi Diskominfo Kota Bogor untuk meningkatkan pengalaman pengguna (UX).
+                    </p>
+                    <div class="pt-6 border-t border-slate-100 mt-auto flex justify-between items-center">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Selesai</span>
+                        <span class="text-blue-600 text-[9px] font-bold uppercase underline">Lihat Galeri</span>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="exp-card" onclick="openGallery('dpm')">
+                    <div class="mb-8 flex justify-between items-start">
+                        <span class="badge-organisasi">Organisasi Legislatif</span>
+                        <span class="text-[10px] font-bold text-slate-400">2025</span>
+                    </div>
+                    <h4 class="text-xl font-extrabold text-slate-900 mb-2">DPM Fasilkom</h4>
+                    <p class="text-blue-500 text-xs font-black uppercase tracking-widest mb-6">Wakil Ketua</p>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-8 flex-grow">
+                       Menjalankan fungsi pengawasan, aspirasi, dan legislasi di tingkat Fakultas Ilmu Komputer serta memimpin koordinasi internal lembaga.
+                    </p>
+                    <div class="pt-6 border-t border-slate-100 mt-auto flex justify-between items-center">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Periode Aktif</span>
+                        <span class="text-blue-600 text-[9px] font-bold uppercase underline">Lihat Galeri</span>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="exp-card" onclick="openGallery('hima')">
+                    <div class="mb-8 flex justify-between items-start">
+                        <span class="badge-organisasi">Organisasi Eksekutif</span>
+                        <span class="text-[10px] font-bold text-slate-400">2024 - 2025</span>
+                    </div>
+                    <h4 class="text-xl font-extrabold text-slate-900 mb-2">Hima Fasilkom</h4>
+                    <p class="text-blue-500 text-xs font-black uppercase tracking-widest mb-6">Ketua Divisi Projek & Keilmuan</p>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-8 flex-grow">
+                        Mengelola program kerja berbasis pengembangan teknologi dan akademik bagi mahasiswa Fakultas Ilmu Komputer.
+                    </p>
+                    <div class="pt-6 border-t border-slate-100 mt-auto flex justify-between items-center">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Selesai</span>
+                        <span class="text-blue-600 text-[9px] font-bold uppercase underline">Lihat Galeri</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SERTIFIKAT SECTION -->
+            <div class="mb-20">
+                <h3 class="text-3xl font-extrabold text-slate-900 tracking-tighter mb-10">Sertifikasi & Penghargaan.</h3>
+                <div class="relative group max-w-3xl mx-auto overflow-hidden rounded-[40px] shadow-2xl border-8 border-white cursor-pointer" onclick="openGallery('certificate')">
+                   <img src="gambar/sertif.jpg" 
+     alt="Sertifikat Dzikri" 
+     class="w-full h-auto object-cover transform transition-transform duration-1000 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div>
+                            <span class="bg-blue-600 text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full mb-3 inline-block">Sertifikat</span>
+                            <h4 class="text-2xl font-bold text-white leading-tight">Sertifikat Magang Diskominfo Kota Bogor</h4>
+                            <p class="text-white/70 text-sm">Klik untuk besarkan gambar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KEAHLIAN TEKNIKAL -->
+            <div class="bg-white border border-slate-100 rounded-[40px] p-10 md:p-16 shadow-sm mb-20">
+                <div class="mb-14 text-center md:text-left">
+                    <span class="text-blue-600 font-black uppercase tracking-[0.3em] text-[9px] mb-3 block">Kemahiran Teras</span>
+                    <h3 class="text-4xl font-extrabold text-slate-900 tracking-tighter">Skill dan Keahlian.</h3>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-12">
+                    <div>
+                        <span class="skill-group-title">Software Basis Data</span>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="skill-tag">MySQL</span>
+                            <span class="skill-tag">PHPmyadmin</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="skill-group-title">Bahasa Pemrograman</span>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="skill-tag">C++</span>
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">HTML</span>
+                            <span class="skill-tag">CSS</span>
+                            <span class="skill-tag">JavaScript</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="skill-group-title">Software Desain Grafis</span>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="skill-tag">Figma</span>
+                            <span class="skill-tag">Canva</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="skill-group-title">Bahasa Asing</span>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="skill-tag">Inggris</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT SECTION -->
+        <section id="contact" class="py-40 px-6 bg-slate-950 text-white rounded-t-[50px]">
+            <div class="max-w-6xl mx-auto flex flex-col items-center text-center">
+                <h2 class="text-blue-500 font-black uppercase tracking-[0.5em] text-[10px] mb-8">Hubungi Saya</h2>
+                <h4 class="text-4xl md:text-7xl font-black mb-10 tracking-tighter uppercase leading-[1]">Ada Ide Menarik? <br>Ayo Kolaborasi.</h4>
+                <a href="mailto:dzikriramdhani45@gmail.com" class="text-white font-black text-xl md:text-3xl mb-16 hover:text-blue-400 transition-colors underline underline-offset-8">dzikriramdhani45@gmail.com</a>
+                
+                <div class="w-full pt-10 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-8">
+                    <p class="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">© 2026 MUHAMMAD DZIKRI RAMDHANI</p>
+                    <div class="flex gap-10">
+                        <a href="https://www.instagram.com/zzkvyy" class="text-slate-400 hover:text-white text-[10px] font-black uppercase tracking-widest transition-colors">Instagram</a>
+                        <a href="https://www.linkedin.com/in/muhammad-dzikri-ramdhani-6b85b8309/" class="text-slate-400 hover:text-white text-[10px] font-black uppercase tracking-widest transition-colors">Linkedin</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Gallery -->
+    <div id="galleryModal" class="modal" onclick="closeGallery()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="absolute top-6 right-8 text-slate-400 hover:text-slate-900 text-3xl font-bold" onclick="closeGallery()">&times;</button>
+            <div class="mb-10">
+                <h4 id="modalTitle" class="text-3xl font-black text-slate-900 mb-2"></h4>
+                <p class="text-slate-500 text-sm"></p>
+            </div>
+            <div id="modalGalleryGrid" class="grid grid-cols-1 gap-6">
+                <!-- Gambar disuntik melalui JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Gambar Galeri
+        const galleryData = {
+            'diskominfo': {
+                title: 'Diskominfo Kota Bogor',
+                images: [
+                    'gambar/dis4.jpg',
+                    'gambar/dis2.jpg',
+                    'gambar/dis3.jpg',
+                    'gambar/dis1.jpg',
+                ],
+                cols: 2
+            },
+            'dpm': {
+                title: 'DPM Fasilkom',
+                images: [
+                    'gambar/dpm1.jpg',
+                    'gambar/dpm2.jpg',
+                    'gambar/dpm3.jpg',
+                    'gambar/dpm4.jpg'
+                ],
+                cols: 2
+            },
+            'hima': {
+                title: 'Hima Fasilkom',
+                images: [
+                    'gambar/him1.jpg',
+                    'gambar/him2.jpg',
+                ],
+                cols: 2
+            },
+            'certificate': {
+                title: 'Sertifikat Kompetensi',
+                images: [
+                   'gambar/sertif.jpg'
+                ],
+                cols: 1
+            }
+        };
+
+        function openGallery(key) {
+            const data = galleryData[key];
+            const modal = document.getElementById('galleryModal');
+            const grid = document.getElementById('modalGalleryGrid');
+            const title = document.getElementById('modalTitle');
+
+            title.innerText = data.title;
+            grid.innerHTML = '';
+            
+            grid.className = `grid gap-6 ${data.cols === 2 ? 'grid-cols-2' : 'grid-cols-1'}`;
+            
+            data.images.forEach(src => {
+                const div = document.createElement('div');
+                div.className = 'rounded-3xl overflow-hidden shadow-lg border-4 border-slate-50';
+                div.innerHTML = `<img src="${src}" class="w-full h-auto object-cover">`;
+                grid.appendChild(div);
+            });
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeGallery() {
+            document.getElementById('galleryModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Typing Effect
+        const textElement = document.getElementById('typing');
+        const words = ["Portofolio Peribadi", "Dzikri Ramdhani", "Creative Dev", "UI Designer"];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function type() {
+            const currentWord = words[wordIndex];
+            if (isDeleting) {
+                textElement.textContent = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                textElement.textContent = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 80 : 150;
+
+            if (!isDeleting && charIndex === currentWord.length) {
+                isDeleting = true;
+                typeSpeed = 1500;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+                typeSpeed = 500;
+            }
+            setTimeout(type, typeSpeed);
+        }
+
+        const sections = document.querySelectorAll('section');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        window.addEventListener('scroll', () => {
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= (sectionTop - 250)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-section') === current) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        window.onload = type;
+    </script>
+</body>
+</html>
